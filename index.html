@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Daily Target App</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #eef3f8;
+    }
+
+    .app {
+      max-width: 450px;
+      margin: 40px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 5px 20px #ccc;
+    }
+
+    h1 {
+      text-align: center;
+      color: #222;
+    }
+
+    .date {
+      text-align: center;
+      color: #777;
+      margin-bottom: 20px;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 8px;
+    }
+
+    input {
+      flex: 1;
+      padding: 13px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 12px 18px;
+      background: #1677ff;
+      color: white;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    ul {
+      padding: 0;
+      list-style: none;
+    }
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px;
+      margin: 10px 0;
+      background: #f5f7fa;
+      border-radius: 10px;
+    }
+
+    li input {
+      flex: none;
+      width: 20px;
+      height: 20px;
+    }
+
+    .completed {
+      text-decoration: line-through;
+      color: #888;
+    }
+
+    .delete {
+      margin-left: auto;
+      background: #ff4444;
+      padding: 7px 10px;
+    }
+
+    .progress {
+      margin-top: 20px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .bar {
+      height: 12px;
+      background: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    #progressBar {
+      height: 100%;
+      width: 0%;
+      background: #20c56a;
+      transition: 0.3s;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <h1>🎯 My Daily Targets</h1>
+
+  <div class="date" id="date"></div>
+
+  <div class="input-area">
+    <input
+      type="text"
+      id="targetInput"
+      placeholder="Write your target..."
+    >
+
+    <button onclick="addTarget()">Add</button>
+  </div>
+
+  <ul id="targetList"></ul>
+
+  <div class="progress">
+    Progress: <span id="progressText">0%</span>
+
+    <div class="bar">
+      <div id="progressBar"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+let targets = JSON.parse(
+  localStorage.getItem("dailyTargets")
+) || [];
+
+document.getElementById("date").textContent =
+  new Date().toDateString();
+
+function saveTargets() {
+  localStorage.setItem(
+    "dailyTargets",
+    JSON.stringify(targets)
+  );
+}
+
+function addTarget() {
+
+  const input =
+    document.getElementById("targetInput");
+
+  const text = input.value.trim();
+
+  if (text === "") {
+    alert("Please write a target!");
+    return;
+  }
+
+  targets.push({
+    text: text,
+    completed: false
+  });
+
+  input.value = "";
+
+  saveTargets();
+  displayTargets();
+}
+
+function toggleTarget(index) {
+
+  targets[index].completed =
+    !targets[index].completed;
+
+  saveTargets();
+  displayTargets();
+}
+
+function deleteTarget(index) {
+
+  targets.splice(index, 1);
+
+  saveTargets();
+  displayTargets();
+}
+
+function displayTargets() {
+
+  const list =
+    document.getElementById("targetList");
+
+  list.innerHTML = "";
+
+  targets.forEach((target, index) => {
+
+    const li = document.createElement("li");
+
+    const checkbox =
+      document.createElement("input");
+
+    checkbox.type = "checkbox";
+    checkbox.checked = target.completed;
+
+    checkbox.onclick = function() {
+      toggleTarget(index);
+    };
+
+    const text =
+      document.createElement("span");
+
+    text.textContent = target.text;
+
+    if (target.completed) {
+      text.classList.add("completed");
+    }
+
+    const deleteButton =
+      document.createElement("button");
+
+    deleteButton.textContent = "Delete";
+    deleteButton.className = "delete";
+
+    deleteButton.onclick = function() {
+      deleteTarget(index);
+    };
+
+    li.appendChild(checkbox);
+    li.appendChild(text);
+    li.appendChild(deleteButton);
+
+    list.appendChild(li);
+  });
+
+  updateProgress();
+}
+
+function updateProgress() {
+
+  const total = targets.length;
+
+  const completed =
+    targets.filter(t => t.completed).length;
+
+  let percent = 0;
+
+  if (total > 0) {
+    percent = Math.round(
+      (completed / total) * 100
+    );
+  }
+
+  document.getElementById("progressText")
+    .textContent = percent + "%";
+
+  document.getElementById("progressBar")
+    .style.width = percent + "%";
+}
+
+displayTargets();
+
+</script>
+
+</body>
+</html>
