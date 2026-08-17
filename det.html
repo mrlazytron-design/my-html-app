@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Student Growth Journal</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  background:#f4f7fb;
+  color:#1f2937;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* LOGIN */
+
+#loginPage{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+  background:linear-gradient(135deg,#4f46e5,#7c3aed);
+}
+
+.login-box{
+  width:100%;
+  max-width:420px;
+  background:white;
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 15px 40px rgba(0,0,0,.2);
+}
+
+.login-box h1{
+  text-align:center;
+  color:#4338ca;
+  margin-bottom:8px;
+}
+
+.login-box p{
+  text-align:center;
+  color:#6b7280;
+  margin-bottom:25px;
+}
+
+input,textarea{
+  width:100%;
+  padding:13px;
+  border:1px solid #d1d5db;
+  border-radius:10px;
+  margin-bottom:12px;
+  font-size:15px;
+  outline:none;
+}
+
+input:focus,textarea:focus{
+  border-color:#6366f1;
+}
+
+.btn{
+  border:none;
+  padding:12px 18px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.primary{
+  background:#4f46e5;
+  color:white;
+}
+
+.primary:hover{
+  background:#4338ca;
+}
+
+.danger{
+  background:#fee2e2;
+  color:#dc2626;
+}
+
+.success{
+  background:#dcfce7;
+  color:#15803d;
+}
+
+.premium{
+  background:#f59e0b;
+  color:white;
+}
+
+/* APP */
+
+header{
+  background:linear-gradient(135deg,#4f46e5,#7c3aed);
+  color:white;
+  padding:22px;
+}
+
+.header-inner{
+  max-width:1000px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+}
+
+header h1{
+  font-size:25px;
+}
+
+.user-area{
+  text-align:right;
+}
+
+.user-area small{
+  display:block;
+  opacity:.9;
+}
+
+nav{
+  background:white;
+  padding:12px;
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+nav button{
+  border:none;
+  padding:10px 15px;
+  border-radius:9px;
+  background:#eef2ff;
+  color:#4338ca;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+nav button.active,
+nav button:hover{
+  background:#4f46e5;
+  color:white;
+}
+
+.container{
+  width:92%;
+  max-width:950px;
+  margin:25px auto;
+}
+
+.section{
+  display:none;
+}
+
+.section.active{
+  display:block;
+}
+
+.card{
+  background:white;
+  padding:22px;
+  margin-bottom:20px;
+  border-radius:16px;
+  box-shadow:0 4px 15px rgba(0,0,0,.07);
+}
+
+.card h2{
+  color:#3730a3;
+  margin-bottom:15px;
+}
+
+.date-box{
+  text-align:center;
+  background:#eef2ff;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:20px;
+  font-weight:bold;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-bottom:20px;
+}
+
+.stat{
+  background:white;
+  padding:18px;
+  text-align:center;
+  border-radius:14px;
+  box-shadow:0 3px 10px rgba(0,0,0,.06);
+}
+
+.stat strong{
+  display:block;
+  font-size:25px;
+  color:#4f46e5;
+}
+
+.todo-row{
+  display:flex;
+  gap:8px;
+}
+
+.todo-row input{
+  margin-bottom:10px;
+}
+
+.todo-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px;
+  border-bottom:1px solid #eee;
+}
+
+.todo-item.completed span{
+  text-decoration:line-through;
+  color:#9ca3af;
+}
+
+.mistake-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:#f9fafb;
+  padding:12px;
+  margin-bottom:8px;
+  border-radius:10px;
+}
+
+.mistake-dot{
+  width:11px;
+  height:11px;
+  background:#ef4444;
+  border-radius:50%;
+  flex-shrink:0;
+}
+
+.normal-dot{
+  width:11px;
+  height:11px;
+  background:#cbd5e1;
+  border-radius:50%;
+  flex-shrink:0;
+}
+
+.history-card{
+  border-left:5px solid #6366f1;
+  background:white;
+  padding:18px;
+  border-radius:12px;
+  margin-bottom:15px;
+}
+
+.history-card ul{
+  margin:8px 0 15px 20px;
+}
+
+.warning{
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  color:#9a3412;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:15px;
+}
+
+.success-message{
+  background:#ecfdf5;
+  border:1px solid #a7f3d0;
+  color:#047857;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:15px;
+}
+
+.empty{
+  text-align:center;
+  color:#9ca3af;
+  padding:20px;
+}
+
+/* PREMIUM */
+
+.locked{
+  position:relative;
+  overflow:hidden;
+}
+
+.lock-overlay{
+  background:rgba(255,255,255,.96);
+  padding:30px;
+  text-align:center;
+  border:2px dashed #f59e0b;
+  border-radius:14px;
+}
+
+.lock-overlay h3{
+  font-size:22px;
+  color:#92400e;
+  margin-bottom:10px;
+}
+
+.price{
+  font-size:35px;
+  font-weight:bold;
+  color:#4f46e5;
+  margin:15px 0;
+}
+
+.feature-list{
+  text-align:left;
+  max-width:350px;
+  margin:15px auto;
+}
+
+.feature-list li{
+  margin:9px 0;
+}
+
+.subscription{
+  background:linear-gradient(135deg,#fff7ed,#fef3c7);
+  border:1px solid #f59e0b;
+}
+
+.badge{
+  display:inline-block;
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.badge.free{
+  background:#e5e7eb;
+  color:#374151;
+}
+
+.badge.pro{
+  background:#f59e0b;
+  color:white;
+}
+
+@media(max-width:650px){
+
+  .header-inner{
+    flex-direction:column;
+    text-align:center;
+  }
+
+  .user-area{
+    text-align:center;
+  }
+
+  nav{
+    overflow-x:auto;
+    justify-content:flex-start;
+  }
+
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+  .todo-row{
+    flex-direction:column;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     LOGIN PAGE
+========================= -->
+
+<div id="loginPage">
+
+  <div class="login-box">
+
+    <h1>🌱 Student Growth</h1>
+
+    <p>
+      Plan your day. Learn from mistakes.
+      Become better every week.
+    </p>
+
+    <input
+      id="nameInput"
+      type="text"
+      placeholder="Student name"
+    >
+
+    <input
+      id="emailInput"
+      type="email"
+      placeholder="Email address"
+    >
+
+    <input
+      id="passwordInput"
+      type="password"
+      placeholder="Password"
+    >
+
+    <button
+      class="btn primary"
+      style="width:100%;"
+      onclick="login()"
+    >
+      Login / Create Account
+    </button>
+
+    <p style="font-size:12px;margin-top:15px;margin-bottom:0;">
+      Demo version: account data is stored in this browser.
+    </p>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     MAIN APP
+========================= -->
+
+<div id="app" class="hidden">
+
+<header>
+
+  <div class="header-inner">
+
+    <div>
+      <h1>🌱 Student Growth Journal</h1>
+      <small>Build better habits every day.</small>
+    </div>
+
+    <div class="user-area">
+
+      <strong id="userName"></strong>
+
+      <small>
+        <span id="planBadge"></span>
+      </small>
+
+      <button
+        class="btn danger"
+        style="margin-top:8px;"
+        onclick="logout()"
+      >
+        Logout
+      </button>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<nav>
+
+  <button
+    class="nav-btn active"
+    onclick="showSection('today',this)"
+  >
+    📋 Today
+  </button>
+
+  <button
+    class="nav-btn"
+    onclick="showSection('history',this)"
+  >
+    📚 History
+  </button>
+
+  <button
+    class="nav-btn"
+    onclick="showSection('subscription',this)"
+  >
+    ⭐ Premium
+  </button>
+
+  <button
+    class="nav-btn"
+    onclick="showSection('essay',this)"
+  >
+    ✍️ Weekly Essay
+  </button>
+
+</nav>
+
+
+<div class="container">
+
+<!-- =========================
+     TODAY
+========================= -->
+
+<section id="today" class="section active">
+
+  <div class="date-box">
+    📅 <span id="todayDate"></span>
+  </div>
+
+  <div class="stats">
+
+    <div class="stat">
+      <strong id="todoCount">0</strong>
+      Tasks
+    </div>
+
+    <div class="stat">
+      <strong id="mistakeCount">0</strong>
+      Mistakes
+    </div>
+
+    <div class="stat">
+      <strong id="historyCount">0</strong>
+      Days
+    </div>
+
+  </div>
+
+
+  <!-- TODO -->
+
+  <div class="card">
+
+    <h2>📋 Today's To-Do List</h2>
+
+    <div class="todo-row">
+
+      <input
+        id="todoInput"
+        placeholder="Enter today's task..."
+        onkeydown="
+          if(event.key==='Enter') addTodo()
+        "
+      >
+
+      <button
+        class="btn primary"
+        onclick="addTodo()"
+      >
+        Add
+      </button>
+
+    </div>
+
+    <div id="todoList"></div>
+
+  </div>
+
+
+  <!-- MISTAKES -->
+
+  <div class="card">
+
+    <h2>🧠 Mistakes of Today</h2>
+
+    <p style="color:#6b7280;margin-bottom:12px;">
+      Write your mistakes in short points.
+      Repeated mistakes get a 🔴 red dot.
+    </p>
+
+    <div class="todo-row">
+
+      <input
+        id="mistakeInput"
+        placeholder="Example: I didn't finish my homework..."
+        onkeydown="
+          if(event.key==='Enter') addMistake()
+        "
+      >
+
+      <button
+        class="btn primary"
+        onclick="addMistake()"
+      >
+        Add
+      </button>
+
+    </div>
+
+    <div id="mistakeList"></div>
+
+  </div>
+
+
+  <!-- IMPROVEMENT -->
+
+  <div class="card">
+
+    <h2>💡 What Should I Do to Improve?</h2>
+
+    <textarea
+      id="improvement"
+      placeholder="Write your improvement plan for tomorrow..."
+    ></textarea>
+
+  </div>
+
+
+  <div class="card">
+
+    <button
+      class="btn primary"
+      onclick="saveDay()"
+    >
+      💾 Save Today's Progress
+    </button>
+
+    <div
+      id="saveMessage"
+      style="margin-top:15px;"
+    ></div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     HISTORY
+========================= -->
+
+<section id="history" class="section">
+
+  <div class="card">
+
+    <h2>📚 Daily History</h2>
+
+    <div id="historyList"></div>
+
+  </div>
+
+
+  <!-- PREMIUM STATISTICS -->
+
+  <div class="card locked">
+
+    <div id="statisticsContent"></div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     PREMIUM
+========================= -->
+
+<section id="subscription" class="section">
+
+  <div class="card subscription">
+
+    <h2>⭐ Student Growth Premium</h2>
+
+    <p>
+      Unlock advanced tools to understand your habits
+      and improve every week.
+    </p>
+
+    <div class="price">
+      ₹49 <small style="font-size:16px;">/ month</small>
+    </div>
+
+    <ul class="feature-list">
+
+      <li>✅ Unlimited daily journal history</li>
+
+      <li>✅ Repeated mistake tracking</li>
+
+      <li>✅ Weekly improvement essay</li>
+
+      <li>✅ Progress statistics</li>
+
+      <li>✅ Habit improvement insights</li>
+
+      <li>✅ Weekly progress review</li>
+
+    </ul>
+
+    <div id="subscriptionArea"></div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     WEEKLY ESSAY
+========================= -->
+
+<section id="essay" class="section">
+
+  <div class="card">
+
+    <h2>✍️ Weekly Improvement Essay</h2>
+
+    <div id="essayStatus"></div>
+
+    <div id="essayForm">
+
+      <label>
+        <strong>What did I learn this week?</strong>
+      </label>
+
+      <textarea
+        id="learned"
+        placeholder="Write what you learned..."
+      ></textarea>
+
+      <label>
+        <strong>Which mistakes did I improve?</strong>
+      </label>
+
+      <textarea
+        id="improvedMistakes"
+        placeholder="Write about your improvement..."
+      ></textarea>
+
+      <label>
+        <strong>What will I improve next week?</strong>
+      </label>
+
+      <textarea
+        id="nextWeek"
+        placeholder="Write your plan for next week..."
+      ></textarea>
+
+      <button
+        class="btn primary"
+        onclick="saveEssay()"
+      >
+        Save Essay
+      </button>
+
+      <div
+        id="essayMessage"
+        style="margin-top:15px;"
+      ></div>
+
+    </div>
+
+  </div>
+
+</section>
+
+</div>
+</div>
+
+
+<script>
+
+/* =========================================
+   ACCOUNT
+========================================= */
+
+let account =
+  JSON.parse(localStorage.getItem("studentAccount") || "null");
+
+let todos =
+  JSON.parse(localStorage.getItem("studentTodos") || "[]");
+
+let mistakes =
+  JSON.parse(localStorage.getItem("studentMistakes") || "[]");
+
+let dailyHistory =
+  JSON.parse(localStorage.getItem("dailyHistory") || "[]");
+
+let weeklyEssays =
+  JSON.parse(localStorage.getItem("weeklyEssays") || "[]");
+
+
+function login(){
+
+  const name =
+    document.getElementById("nameInput").value.trim();
+
+  const email =
+    document.getElementById("emailInput").value.trim();
+
+  const password =
+    document.getElementById("passwordInput").value;
+
+  if(!name || !email || !password){
+
+    alert("Please enter your name, email and password.");
+
+    return;
+  }
+
+  account = {
+    name:name,
+    email:email,
+
+    /*
+      DEMO ONLY.
+
+      Never store a real password like this
+      in a production application.
+    */
+
+    password:password,
+
+    plan:"free",
+
+    subscriptionStart:null,
+
+    subscriptionEnd:null
+  };
+
+  localStorage.setItem(
+    "studentAccount",
+    JSON.stringify(account)
+  );
+
+  openApp();
+}
+
+
+function openApp(){
+
+  document
+    .getElementById("loginPage")
+    .classList.add("hidden");
+
+  document
+    .getElementById("app")
+    .classList.remove("hidden");
+
+  document.getElementById("userName")
+    .textContent = account.name;
+
+  updatePlanBadge();
+
+  renderAll();
+}
+
+
+function logout(){
+
+  document
+    .getElementById("app")
+    .classList.add("hidden");
+
+  document
+    .getElementById("loginPage")
+    .classList.remove("hidden");
+}
+
+
+/* =========================================
+   SUBSCRIPTION
+========================================= */
+
+function isPremium(){
+
+  if(!account){
+    return false;
+  }
+
+  if(account.plan !== "premium"){
+    return false;
+  }
+
+  if(!account.subscriptionEnd){
+    return false;
+  }
+
+  const expiry =
+    new Date(account.subscriptionEnd);
+
+  if(new Date() > expiry){
+
+    account.plan = "free";
+
+    localStorage.setItem(
+      "studentAccount",
+      JSON.stringify(account)
+    );
+
+    return false;
+  }
+
+  return true;
+}
+
+
+function activateDemoSubscription(){
+
+  /*
+    DEMO PAYMENT.
+
+    This does NOT charge money.
+
+    For a real ₹49 subscription,
+    connect this function to a payment
+    provider and verify payment on your server.
+  */
+
+  const start = new Date();
+
+  const end = new Date(start);
+
+  end.setMonth(end.getMonth() + 1);
+
+  account.plan = "premium";
+
+  account.subscriptionStart =
+    start.toISOString();
+
+  account.subscriptionEnd =
+    end.toISOString();
+
+  localStorage.setItem(
+    "studentAccount",
+    JSON.stringify(account)
+  );
+
+  updatePlanBadge();
+
+  renderSubscription();
+
+  alert(
+    "Demo Premium activated for 1 month!"
+  );
+}
+
+
+function updatePlanBadge(){
+
+  const badge =
+    document.getElementById("planBadge");
+
+  if(isPremium()){
+
+    badge.innerHTML =
+      `<span class="badge pro">⭐ PREMIUM</span>`;
+
+  }else{
+
+    badge.innerHTML =
+      `<span class="badge free">FREE</span>`;
+  }
+}
+
+
+/* =========================================
+   NAVIGATION
+========================================= */
+
+function showSection(name,button){
+
+  document.querySelectorAll(".section")
+    .forEach(section =>
+      section.classList.remove("active")
+    );
+
+  document.getElementById(name)
+    .classList.add("active");
+
+  document.querySelectorAll(".nav-btn")
+    .forEach(btn =>
+      btn.classList.remove("active")
+    );
+
+  button.classList.add("active");
+
+  if(name==="history"){
+    renderHistory();
+    renderStatistics();
+  }
+
+  if(name==="subscription"){
+    renderSubscription();
+  }
+
+  if(name==="essay"){
+    renderEssay();
+  }
+}
+
+
+/* =========================================
+   TODO
+========================================= */
+
+function addTodo(){
+
+  const input =
+    document.getElementById("todoInput");
+
+  const text =
+    input.value.trim();
+
+  if(!text)return;
+
+  todos.push({
+    id:Date.now(),
+    text:text,
+    completed:false
+  });
+
+  input.value="";
+
+  saveTemp();
+
+  renderTodos();
+}
+
+
+function toggleTodo(id){
+
+  const todo =
+    todos.find(t=>t.id===id);
+
+  if(todo){
+    todo.completed=!todo.completed;
+  }
+
+  saveTemp();
+  renderTodos();
+}
+
+
+function deleteTodo(id){
+
+  todos =
+    todos.filter(t=>t.id!==id);
+
+  saveTemp();
+  renderTodos();
+}
+
+
+function renderTodos(){
+
+  const box =
+    document.getElementById("todoList");
+
+  if(!todos.length){
+
+    box.innerHTML =
+      `<div class="empty">No tasks yet.</div>`;
+
+    updateStats();
+
+    return;
+  }
+
+  box.innerHTML =
+    todos.map(todo=>`
+
+      <div class="todo-item">
+
+        <input
+          type="checkbox"
+          ${todo.completed?"checked":""}
+          onchange="toggleTodo(${todo.id})"
+        >
+
+        <span style="flex:1">
+          ${escapeHTML(todo.text)}
+        </span>
+
+        <button
+          class="btn danger"
+          onclick="deleteTodo(${todo.id})"
+        >
+          Delete
+        </button>
+
+      </div>
+
+    `).join("");
+
+  updateStats();
+}
+
+
+/* =========================================
+   MISTAKES
+========================================= */
+
+function todayDate(){
+
+  const d = new Date();
+
+  return d.toISOString().split("T")[0];
+}
+
+
+function normalize(text){
+
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s]/g,"")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+
+function addMistake(){
+
+  const input =
+    document.getElementById("mistakeInput");
+
+  const text =
+    input.value.trim();
+
+  if(!text)return;
+
+  mistakes.push({
+
+    id:Date.now()+Math.random(),
+
+    date:todayDate(),
+
+    text:text
+
+  });
+
+  input.value="";
+
+  saveTemp();
+
+  renderMistakes();
+}
+
+
+function repeatedMistake(text){
+
+  const normalized =
+    normalize(text);
+
+  return mistakes.some(m =>
+    m.date !== todayDate() &&
+    normalize(m.text) === normalized
+  );
+}
+
+
+function renderMistakes(){
+
+  const box =
+    document.getElementById("mistakeList");
+
+  const todayMistakes =
+    mistakes.filter(m =>
+      m.date===todayDate()
+    );
+
+  if(!todayMistakes.length){
+
+    box.innerHTML =
+      `<div class="empty">
+        No mistakes recorded today.
+      </div>`;
+
+    updateStats();
+
+    return;
+  }
+
+  box.innerHTML =
+    todayMistakes.map(m=>{
+
+      const repeated =
+        repeatedMistake(m.text);
+
+      return `
+
+        <div class="mistake-item">
+
+          <span
+            class="${repeated
+              ? "mistake-dot"
+              : "normal-dot"}"
+          ></span>
+
+          <span style="flex:1">
+
+            ${escapeHTML(m.text)}
+
+            ${
+              repeated
+              ? `<small style="
+                  display:block;
+                  color:#dc2626;
+                  font-weight:bold;
+                ">
+                  🔴 Repeated mistake
+                </small>`
+              :""
+            }
+
+          </span>
+
+          <button
+            class="btn danger"
+            onclick="deleteMistake(${m.id})"
+          >
+            Delete
+          </button>
+
+        </div>
+      `;
+
+    }).join("");
+
+  updateStats();
+}
+
+
+function deleteMistake(id){
+
+  mistakes =
+    mistakes.filter(m=>m.id!==id);
+
+  saveTemp();
+
+  renderMistakes();
+}
+
+
+/* =========================================
+   DAILY SAVE
+========================================= */
+
+function saveDay(){
+
+  const improvement =
+    document
+      .getElementById("improvement")
+      .value.trim();
+
+  const currentDate =
+    todayDate();
+
+  const todayMistakes =
+    mistakes
+      .filter(m=>m.date===currentDate)
+      .map(m=>m.text);
+
+  const record = {
+
+    date:currentDate,
+
+    todos:[...todos],
+
+    mistakes:todayMistakes,
+
+    improvement:improvement
+
+  };
+
+  const index =
+    dailyHistory.findIndex(
+      d=>d.date===currentDate
+    );
+
+  if(index>=0){
+
+    dailyHistory[index]=record;
+
+  }else{
+
+    dailyHistory.push(record);
+
+  }
+
+  dailyHistory.sort(
+    (a,b)=>b.date.localeCompare(a.date)
+  );
+
+  localStorage.setItem(
+    "dailyHistory",
+    JSON.stringify(dailyHistory)
+  );
+
+  document.getElementById("saveMessage")
+    .innerHTML=`
+
+      <div class="success-message">
+        ✅ Today's progress saved!
+      </div>
+
+    `;
+
+  updateStats();
+}
+
+
+/* =========================================
+   HISTORY
+========================================= */
+
+function renderHistory(){
+
+  const box =
+    document.getElementById("historyList");
+
+  if(!dailyHistory.length){
+
+    box.innerHTML =
+      `<div class="empty">
+        No history yet.
+      </div>`;
+
+    return;
+  }
+
+  box.innerHTML =
+    dailyHistory.map(day=>`
+
+      <div class="history-card">
+
+        <h3>
+          📅 ${formatDate(day.date)}
+        </h3>
+
+        <strong>📋 Tasks</strong>
+
+        <ul>
+
+          ${
+            (day.todos||[]).map(todo=>`
+
+              <li>
+                ${todo.completed?"✅":"⬜"}
+                ${escapeHTML(todo.text)}
+              </li>
+
+            `).join("")
+          }
+
+        </ul>
+
+
+        <strong>🧠 Mistakes</strong>
+
+        <ul>
+
+          ${
+            (day.mistakes||[]).map(m=>{
+
+              const repeated =
+                mistakes.some(other =>
+                  other.date!==day.date &&
+                  normalize(other.text)===normalize(m)
+                );
+
+              return `
+
+                <li>
+
+                  ${
+                    repeated
+                    ? `<span style="color:red">
+                        🔴
+                      </span>`
+                    :"•"
+                  }
+
+                  ${escapeHTML(m)}
+
+                </li>
+              `;
+
+            }).join("")
+          }
+
+        </ul>
+
+
+        <strong>💡 Improvement</strong>
+
+        <p style="margin-top:8px">
+
+          ${
+            escapeHTML(
+              day.improvement ||
+              "No improvement plan."
+            )
+          }
+
+        </p>
+
+      </div>
+
+    `).join("");
+}
+
+
+/* =========================================
+   PREMIUM STATISTICS
+========================================= */
+
+function renderStatistics(){
+
+  const box =
+    document.getElementById(
+      "statisticsContent"
+    );
+
+  if(!isPremium()){
+
+    box.innerHTML=`
+
+      <div class="lock-overlay">
+
+        <h3>🔒 Premium Statistics</h3>
+
+        <p>
+          Upgrade to Premium to see your
+          improvement statistics and
+          repeated-mistake trends.
+        </p>
+
+        <br>
+
+        <button
+          class="btn premium"
+          onclick="openPremium()"
+        >
+          ⭐ Unlock for ₹49/month
+        </button>
+
+      </div>
+
+    `;
+
+    return;
+  }
+
+  const totalMistakes =
+    mistakes.length;
+
+  const repeated =
+    mistakes.filter(m =>
+      repeatedMistake(m.text)
+    ).length;
+
+  const completed =
+    todos.filter(t=>t.completed).length;
+
+  box.innerHTML=`
+
+    <h2>📊 Your Progress</h2>
+
+    <div class="stats">
+
+      <div class="stat">
+        <strong>${dailyHistory.length}</strong>
+        Journal Days
+      </div>
+
+      <div class="stat">
+        <strong>${totalMistakes}</strong>
+        Total Mistakes
+      </div>
+
+      <div class="stat">
+        <strong>${repeated}</strong>
+        Repeated
+      </div>
+
+    </div>
+
+    <div class="success-message">
+
+      🎯 You have completed
+      <strong>${completed}</strong>
+      tasks in your current list.
+
+    </div>
+
+  `;
+}
+
+
+function openPremium(){
+
+  document.querySelectorAll(".section")
+    .forEach(s=>s.classList.remove("active"));
+
+  document
+    .getElementById("subscription")
+    .classList.add("active");
+
+  renderSubscription();
+}
+
+
+/* =========================================
+   SUBSCRIPTION PAGE
+========================================= */
+
+function renderSubscription(){
+
+  const box =
+    document.getElementById(
+      "subscriptionArea"
+    );
+
+  if(isPremium()){
+
+    const expiry =
+      new Date(account.subscriptionEnd);
+
+    box.innerHTML=`
+
+      <div class="success-message">
+
+        ⭐ You are a Premium member!
+
+        <br><br>
+
+        Subscription expires:
+        <strong>
+          ${expiry.toLocaleDateString()}
+        </strong>
+
+      </div>
+
+    `;
+
+    return;
+  }
+
+  box.innerHTML=`
+
+    <div class="warning">
+
+      <strong>Free Plan</strong>
+
+      <br><br>
+
+      Some advanced features are locked.
+
+    </div>
+
+    <button
+      class="btn premium"
+      onclick="activateDemoSubscription()"
+    >
+      ⭐ Subscribe for ₹49 / Month
+    </button>
+
+    <p style="
+      margin-top:12px;
+      font-size:12px;
+      color:#6b7280;
+    ">
+      Demo button — no real payment is processed.
+    </p>
+
+  `;
+}
+
+
+/* =========================================
+   WEEKLY ESSAY
+========================================= */
+
+function daysOfJournal(){
+
+  if(!dailyHistory.length)return 0;
+
+  const dates =
+    dailyHistory
+      .map(d=>d.date)
+      .sort();
+
+  const first =
+    new Date(dates[0]+"T00:00:00");
+
+  const now =
+    new Date();
+
+  return Math.floor(
+    (now-first)/(1000*60*60*24)
+  )+1;
+}
+
+
+function renderEssay(){
+
+  const status =
+    document.getElementById(
+      "essayStatus"
+    );
+
+  if(!isPremium()){
+
+    status.innerHTML=`
+
+      <div class="lock-overlay">
+
+        <h3>🔒 Premium Feature</h3>
+
+        <p>
+          Weekly improvement essays are
+          available with Premium.
+        </p>
+
+        <br>
+
+        <button
+          class="btn premium"
+          onclick="openPremium()"
+        >
+          ⭐ Unlock Premium
+        </button>
+
+      </div>
+
+    `;
+
+    document
+      .getElementById("essayForm")
+      .classList.add("hidden");
+
+    return;
+  }
+
+  document
+    .getElementById("essayForm")
+    .classList.remove("hidden");
+
+  const days =
+    daysOfJournal();
+
+  if(days<7){
+
+    status.innerHTML=`
+
+      <div class="warning">
+
+        ⏳ Keep journaling!
+
+        Your weekly essay unlocks after
+        <strong>${7-days}</strong>
+        more day(s).
+
+      </div>
+
+    `;
+
+  }else{
+
+    status.innerHTML=`
+
+      <div class="success-message">
+
+        🎉 Weekly essay unlocked!
+
+        Reflect on your progress.
+
+      </div>
+
+    `;
+  }
+}
+
+
+function saveEssay(){
+
+  if(!isPremium()){
+
+    alert("Premium is required.");
+
+    return;
+  }
+
+  if(daysOfJournal()<7){
+
+    alert(
+      "Complete 7 days of journaling first."
+    );
+
+    return;
+  }
+
+  const essay={
+
+    date:todayDate(),
+
+    learned:
+      document.getElementById("learned").value,
+
+    improved:
+      document.getElementById(
+        "improvedMistakes"
+      ).value,
+
+    nextWeek:
+      document.getElementById("nextWeek").value
+
+  };
+
+  weeklyEssays.push(essay);
+
+  localStorage.setItem(
+    "weeklyEssays",
+    JSON.stringify(weeklyEssays)
+  );
+
+  document.getElementById("essayMessage")
+    .innerHTML=`
+
+      <div class="success-message">
+
+        ✅ Weekly essay saved successfully!
+
+      </div>
+
+    `;
+}
+
+
+/* =========================================
+   UTILITIES
+========================================= */
+
+function saveTemp(){
+
+  localStorage.setItem(
+    "studentTodos",
+    JSON.stringify(todos)
+  );
+
+  localStorage.setItem(
+    "studentMistakes",
+    JSON.stringify(mistakes)
+  );
+}
+
+
+function updateStats(){
+
+  document.getElementById("todoCount")
+    .textContent=todos.length;
+
+  document.getElementById("mistakeCount")
+    .textContent=
+      mistakes.filter(
+        m=>m.date===todayDate()
+      ).length;
+
+  document.getElementById("historyCount")
+    .textContent=dailyHistory.length;
+}
+
+
+function formatDate(date){
+
+  return new Date(
+    date+"T00:00:00"
+  ).toLocaleDateString(
+    undefined,
+    {
+      weekday:"long",
+      year:"numeric",
+      month:"long",
+      day:"numeric"
+    }
+  );
+}
+
+
+function escapeHTML(text){
+
+  const div =
+    document.createElement("div");
+
+  div.textContent=text;
+
+  return div.innerHTML;
+}
+
+
+function renderAll(){
+
+  document.getElementById("todayDate")
+    .textContent=
+      new Date().toLocaleDateString(
+        undefined,
+        {
+          weekday:"long",
+          year:"numeric",
+          month:"long",
+          day:"numeric"
+        }
+      );
+
+  renderTodos();
+  renderMistakes();
+  updateStats();
+  renderSubscription();
+  renderEssay();
+  renderStatistics();
+}
+
+
+/* =========================================
+   AUTO LOGIN
+========================================= */
+
+if(account){
+
+  openApp();
+
+}
+
+</script>
+
+</body>
+</html>
