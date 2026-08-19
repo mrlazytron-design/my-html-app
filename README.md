@@ -1,3 +1,0 @@
-# GJournal
-# GJournal
-# GJournal

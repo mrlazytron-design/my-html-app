@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="google-site-verification" content="vzJUASE-jnKBcGFhUo0zcccVHISuImz0kL6Cit-PPi8" />
 <title>Student Growth Journal</title>
 
 <style>
@@ -424,12 +423,21 @@ nav button:hover{
     >
 
     <button
-      class="btn primary"
-      style="width:100%;"
-      onclick="login()"
-    >
-      Login / Create Account
-    </button>
+  class="btn primary"
+  style="width:100%;"
+  onclick="createAccount()"
+>
+  Create Account
+</button>
+
+<button
+  class="btn"
+  style="width:100%;margin-top:10px;background:#e0e7ff;color:#3730a3;"
+  onclick="login()"
+>
+  Login
+</button>
+     
 
     <p style="font-size:12px;margin-top:15px;margin-bottom:0;">
       Demo version: account data is stored in this browser.
@@ -794,7 +802,49 @@ let weeklyEssays =
   JSON.parse(localStorage.getItem("weeklyEssays") || "[]");
 
 
-function login(){
+async function login(){
+
+  const email =
+    document.getElementById("emailInput").value.trim();
+
+  const password =
+    document.getElementById("passwordInput").value;
+
+  if(!email || !password){
+
+    alert("Please enter your email and password.");
+
+    return;
+  }
+
+  const user =
+    await window.firebaseLogin(email, password);
+
+  if(!user){
+    return;
+  }
+
+  const savedName =
+  localStorage.getItem("studentName_" + user.uid);
+
+account = {
+  name: savedName || user.email.split("@")[0],
+  email: user.email,
+  plan: "free",
+  subscriptionStart: null,
+  subscriptionEnd: null
+};
+
+  localStorage.setItem(
+    "studentAccount",
+    JSON.stringify(account)
+  );
+
+  openApp();
+}
+
+window.login = login;
+async function createAccount(){
 
   const name =
     document.getElementById("nameInput").value.trim();
@@ -812,24 +862,33 @@ function login(){
     return;
   }
 
+  const user =
+    await window.firebaseSignup(email, password);
+
+  if(!user){
+    return;
+  }
+
+  // Save user's name
+  localStorage.setItem(
+    "studentName_" + user.uid,
+    name
+  );
+
+  // New account gets fresh local data
+  localStorage.removeItem("studentTodos");
+  localStorage.removeItem("studentMistakes");
+  localStorage.removeItem("dailyHistory");
+  localStorage.removeItem("weeklyEssays");
+
+  await window.saveUserToFirestore(name, email);
+
   account = {
-    name:name,
-    email:email,
-
-    /*
-      DEMO ONLY.
-
-      Never store a real password like this
-      in a production application.
-    */
-
-    password:password,
-
-    plan:"free",
-
-    subscriptionStart:null,
-
-    subscriptionEnd:null
+    name: name,
+    email: email,
+    plan: "free",
+    subscriptionStart: null,
+    subscriptionEnd: null
   };
 
   localStorage.setItem(
@@ -840,6 +899,29 @@ function login(){
   openApp();
 }
 
+window.createAccount = createAccount;
+
+window.createAccount = createAccount;
+
+    window.login = login;
+
+function openApp(){
+
+  document
+    .getElementById("loginPage")
+    .classList.add("hidden");
+
+  document
+    .getElementById("app")
+    .classList.remove("hidden");
+
+  document.getElementById("userName")
+    .textContent = account.name;
+
+  updatePlanBadge();
+
+  renderAll();
+}
 
 function openApp(){
 
@@ -1836,6 +1918,148 @@ if(account){
 
 }
 
+
+</script>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBwkmFIG2pksUxgNCjMwX_LCIe0LVJMvrI",
+  authDomain: "gjournal-62111.firebaseapp.com",
+  projectId: "gjournal-62111",
+  storageBucket: "gjournal-62111.firebasestorage.app",
+  messagingSenderId: "721344904479",
+  appId: "1:721344904479:web:9960b4a8ee7d863a55842a",
+  measurementId: "G-5CM82SEFZQ"
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+const auth = getAuth(app);
+
+
+/* =========================
+   CREATE ACCOUNT
+========================= */
+
+window.firebaseSignup = async function(email, password) {
+
+  try {
+
+    const userCredential =
+      await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+    console.log(
+      "Firebase signup successful:",
+      userCredential.user.uid
+    );
+
+    return userCredential.user;
+
+  } catch(error) {
+
+    console.error(
+      "Firebase signup error:",
+      error
+    );
+
+    alert(error.message);
+
+    return null;
+  }
+
+};
+
+
+/* =========================
+   LOGIN
+========================= */
+
+window.firebaseLogin = async function(email, password) {
+
+  try {
+
+    const userCredential =
+      await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+    console.log(
+      "Firebase login successful:",
+      userCredential.user.uid
+    );
+
+    return userCredential.user;
+
+  } catch(error) {
+
+    console.error(
+      "Firebase login error:",
+      error
+    );
+
+    alert(error.message);
+
+    return null;
+  }
+
+};
+
+
+/* =========================
+   SAVE USER
+========================= */
+
+window.saveUserToFirestore = async function(name, email) {
+
+  try {
+
+    await addDoc(
+      collection(db, "users"),
+      {
+        name: name,
+        email: email,
+        createdAt: new Date()
+      }
+    );
+
+    console.log("User saved to Firestore");
+
+  } catch(error) {
+
+    console.error(
+      "Firestore error:",
+      error
+    );
+  }
+
+};
+
+
+  
 </script>
 
 </body>
